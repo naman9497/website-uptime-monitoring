@@ -2,6 +2,7 @@
 import { useDashboardStore } from '@/stores/dashboard'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import WebsiteItem from '@/components/Websites/WebsiteItem.vue'
+import SearchIcon from '@/components/icons/SearchIcon.vue'
 
 const store = useDashboardStore()
 
@@ -22,9 +23,7 @@ function handleWebsiteClick(website) {
 
     <!-- No client selected -->
     <div v-else-if="!store.selectedClient" class="text-center py-8 text-gray-500">
-      <svg class="mx-auto h-12 w-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
+      <SearchIcon class="mx-auto text-gray-300 mb-4" />
       <p>Select a client to view their monitored websites</p>
     </div>
 
