@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Website;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\RequestException;
 
 class UptimeCheckService
 {
@@ -24,65 +23,10 @@ class UptimeCheckService
 
             $responseTime = (int) ((microtime(true) - $startTime) * 1000);
 
-            if ($response->successful()) {
-                return [
-                    'status' => 'up',
-                    'response_time_ms' => $responseTime,
-                    'http_status_code' => $response->status(),
-                    'error_type' => null,
-                    'error_message' => null,
-                ];
-            } else {
-                return [
-                    'status' => 'down',
-                    'response_time_ms' => $responseTime,
-                    'http_status_code' => $response->status(),
-                    'error_type' => 'http_error',
-                    'error_message' => "HTTP {$response->status()}: " . $response->reason(),
-                ];
-            }
+            return ['status' => $response->successful() ? 'up' : 'down'];
 
-        } catch (ConnectionException $e) {
-            return [
-                'status' => 'down',
-                'response_time_ms' => (int) ((microtime(true) - $startTime) * 1000),
-                'http_status_code' => null,
-                'error_type' => $this->determineConnectionErrorType($e),
-                'error_message' => $e->getMessage(),
-            ];
-        } catch (RequestException $e) {
-            return [
-                'status' => 'down',
-                'response_time_ms' => (int) ((microtime(true) - $startTime) * 1000),
-                'http_status_code' => null,
-                'error_type' => 'timeout',
-                'error_message' => 'Request timeout after ' . $timeout . ' seconds',
-            ];
-        } catch (\Exception $e) {
-            return [
-                'status' => 'down',
-                'response_time_ms' => null,
-                'http_status_code' => null,
-                'error_type' => 'unknown',
-                'error_message' => $e->getMessage(),
-            ];
+        } catch (ConnectionException|\Exception $e) {
+            return ['status' => 'down'];
         }
-    }
-
-    protected function determineConnectionErrorType(\Exception $e): string
-    {
-        $message = strtolower($e->getMessage());
-
-        if (str_contains($message, 'dns') || str_contains($message, 'resolve')) {
-            return 'dns';
-        }
-        if (str_contains($message, 'ssl') || str_contains($message, 'certificate')) {
-            return 'ssl';
-        }
-        if (str_contains($message, 'connection refused') || str_contains($message, 'unreachable')) {
-            return 'connection';
-        }
-
-        return 'network';
     }
 }

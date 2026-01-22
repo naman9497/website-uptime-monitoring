@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\Website;
-use App\Models\UptimeCheck;
 use App\Models\WebsiteStatus;
 use App\Services\UptimeCheckService;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -46,27 +45,12 @@ class CheckWebsiteUptime implements ShouldQueue, ShouldBeUnique
     {
         $result = $service->checkWebsite($this->website);
 
-        $this->storeCheckResult($result);
-
         $this->updateWebsiteStatus($result);
 
         if ($result['status'] === 'down' && $this->shouldSendAlert()) {
             SendDowntimeAlert::dispatch($this->website)
                 ->onQueue('alerts');
         }
-    }
-
-    protected function storeCheckResult(array $result): void
-    {
-        UptimeCheck::create([
-            'website_id' => $this->website->id,
-            'status' => $result['status'],
-            'response_time_ms' => $result['response_time_ms'],
-            'http_status_code' => $result['http_status_code'],
-            'error_type' => $result['error_type'],
-            'error_message' => $result['error_message'],
-            'checked_at' => now(),
-        ]);
     }
 
     protected function updateWebsiteStatus(array $result): void
