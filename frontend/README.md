@@ -19,23 +19,12 @@ This is the frontend application built with Vue 3, TypeScript, and Vite, designe
 
 - Node.js (v18 or higher recommended)
 - npm or yarn
-- Laravel backend running on `http://localhost:8000`
 
 ### Installation
 
 ```bash
 npm install
 ```
-
-### Environment Configuration
-
-Create a `.env` file in the frontend directory (already created):
-
-```env
-VITE_API_BASE_URL=http://localhost:8000/api
-```
-
-This tells the frontend where to find your Laravel API.
 
 ### Development Server
 
@@ -63,109 +52,10 @@ npm run lint
 npm run format
 ```
 
-## API Integration
-
-### API Service Configuration
-
-The API client is configured in [src/services/api.ts](src/services/api.ts) with:
-
-- Base URL from environment variables
-- Automatic Bearer token authentication
-- Request/response interceptors
-- Error handling with automatic redirect on 401
-
-### Using the API Service
-
-Example usage in your components:
-
-```javascript
-import { exampleService } from '@/services/exampleService'
-
-// In your component
-const fetchData = async () => {
-  try {
-    const data = await exampleService.getItems()
-    console.log(data)
-  } catch (error) {
-    console.error('API Error:', error)
-  }
-}
-```
-
-### Creating New API Services
-
-Create service files in `src/services/` directory:
-
-```javascript
-import api from './api'
-
-export const yourService = {
-  getResource: async () => {
-    const response = await api.get('/your-endpoint')
-    return response.data
-  },
-
-  createResource: async (data) => {
-    const response = await api.post('/your-endpoint', data)
-    return response.data
-  }
-}
-```
-
-## Project Structure
-
-```
-frontend/
-├── src/
-│   ├── assets/          # Static assets (images, styles)
-│   ├── components/      # Vue components
-│   │   └── ApiTest.vue  # API connection test component
-│   ├── router/          # Vue Router configuration
-│   ├── services/        # API services
-│   │   ├── api.ts       # Axios instance configuration
-│   │   └── exampleService.ts  # Example API service
-│   ├── stores/          # Pinia stores
-│   ├── views/           # Page components
-│   ├── App.vue          # Root component
-│   └── main.ts          # Application entry point
-├── .env                 # Environment variables
-├── .env.example         # Environment variables template
-└── vite.config.ts       # Vite configuration
-```
-
 ## Connecting to Laravel Backend
 
-### Backend Requirements
-
-1. Laravel backend should be running on `http://localhost:8000`
+1. Laravel backend should be running on `http://localhost/api/v1`
 2. CORS is configured in Laravel to accept requests from `http://localhost:5173`
-3. Laravel Sanctum is configured for API authentication
-
-### Backend Environment Variables
-
-Ensure your Laravel `.env` file has:
-
-```env
-FRONTEND_URL=http://localhost:5173
-SANCTUM_STATEFUL_DOMAINS=localhost:5173
-```
-
-### Testing the Connection
-
-The home page includes an API Test component that automatically tests the connection to your Laravel backend. Visit `http://localhost:5173` after starting both servers to see the connection status.
-
-## Authentication
-
-The API service is pre-configured to handle Bearer token authentication:
-
-1. Store the token in localStorage after login:
-   ```javascript
-   localStorage.setItem('auth_token', token)
-   ```
-
-2. The token is automatically included in all API requests via the request interceptor
-
-3. On 401 responses, the user is automatically redirected to `/login` and the token is cleared
 
 ## Recommended IDE Setup
 
