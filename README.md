@@ -5,6 +5,17 @@ This Laravel application monitors website uptime for multiple clients by checkin
 ### Quick Start
 Run `composer install` in `backend` and `npm install` in `frontend`
 
+If you don't have PHP/Composer installed locally, use Docker to install dependencies:
+```bash
+cd backend
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php84-composer:latest \
+    composer install --ignore-platform-reqs
+```
+
 Use `start.sh` in `backend` to start all services (Docker containers, database, and queue workers):
 
 ```bash
