@@ -3,9 +3,12 @@
 This Laravel application monitors website uptime for multiple clients by checking their websites every 15 minutes.
 
 ### Quick Start
-`cd backend` and use `start.sh` to start all services (Docker containers, database, and queue workers):
+Run `composer install` in `backend` and `npm install` in `frontend`
+
+Use `start.sh` in `backend` to start all services (Docker containers, database, and queue workers):
 
 ```bash
+cd backend
 chmod +x start.sh
 ./start.sh
 ```
